@@ -1,14 +1,26 @@
 # lecture 04
+import pickle
 
-contacts = []
+# contacts = []
 
-init_contact = {
-    'first_name': 'john',
-    'last_name': 'doe',
-    'phone_number': '380111234567'
-}
+# init_contact = {
+#     'first_name': 'john',
+#     'last_name': 'doe',
+#     'phone_number': '380111234567'
+# }
+#
+# contacts.append(init_contact)
 
-contacts.append(init_contact)
+def save_contact(contacts):
+    with open('db.pkl', 'wb') as f:
+        pickle.dump(contacts, f)
+
+def load_contact():
+    list_unpickled = []
+    with open('db.pkl', 'rb') as f:
+        list_unpickled = pickle.load(f)
+    return list_unpickled
+
 
 TITLE = "Your phone book"
 
@@ -37,7 +49,7 @@ def help_me():
     """)
 
 
-def contact_list():
+def contact_list(contacts):
     if len(contacts) > 0:
         for item in contacts:
             for k, v in item.items():
@@ -71,14 +83,14 @@ def update_contact(contact):
     return {'first_name': first_name.lower(), 'last_name': last_name.lower(), 'phone_number': phone_number}
 
 
-def remove_contact(contact):
+def remove_contact(contacts, contact):
     index = contacts.index(contact)
     confirm = input("Are You sure You want to delete this  contact? (y/n): ").strip()
     if confirm.lower() in ('yes', 'y'):
         contacts.pop(index)
 
 
-def lookup_contact(name):
+def lookup_contact(contacts, name):
 
     first_name = ''
     last_name = ''
@@ -97,14 +109,17 @@ def lookup_contact(name):
 
 def main():
     hello()
+    # save_contact(contacts)
+    contacts = load_contact()
 
     while True:
         match make_your_choice():
             case 'a':
                 new_contact = add_contact()
                 contacts.append(new_contact)
+                save_contact(contacts)
             case 'l':
-                contact_list()
+                contact_list(contacts)
 
             case 'u':
                 name = input("What name You looking for: ")
@@ -114,8 +129,8 @@ def main():
 
             case 'r':
                 name = input("What name You looking for: ")
-                contact = lookup_contact(name)
-                remove_contact(contact)
+                contact = lookup_contact(contacts, name)
+                remove_contact(contacts, contact)
 
             case 'q':
                 bye()
@@ -123,5 +138,12 @@ def main():
             case _:
                 help_me()
 
+import sys
 
+if (args_count := len(sys.argv)) > 2:
+    print(f"One argument expected, got {args_count - 1}")
+    raise SystemExit(1)
+elif args_count < 2:
+    print(f"You must specify the database name")
+    raise SystemExit(1)
 main()
