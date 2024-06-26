@@ -39,6 +39,6 @@ my_d = {1:'a', 2:'b', 3:'c'}
 
 # swapped = {v:k for k, v in my_d.items()}
 # swapped = dict((v,k) for k, v in my_d.items())
-# swapped = dict(zip(my_d.values(), my_d))
+# swapped = dict(zip(my_d.values(), my_d))or
 swapped = dict(zip(my_d.values(), my_d.keys()))
 print(swapped) 
